@@ -79,6 +79,7 @@ field!(parser, dict) = begin
     expect(parser, token, "}")
 end
 
+export parse_bibtex
 """
     parse_bibtex(text)
 
