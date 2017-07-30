@@ -87,6 +87,8 @@ This is a simple, input parser for BibTex. I had trouble finding a standard
 specification, but I've included several features of real BibTex.
 
 ```jldoctest
+julia> using BibTeX
+
 julia> result = parse_bibtex(""\"
             @comment blah blah
             @string{short = long}
@@ -98,23 +100,23 @@ julia> result = parse_bibtex(""\"
             ""\");
 
 julia> result["b"]["type"]
-a
+"a"
 
 julia> result["b"]["c"]
-c c
+"c c"
 
 julia> result["b"]["d"]
-d d
+"d d"
 
 julia> result["b"]["e"]
-f short
+"f short"
 
 julia> parse_bibtex("@book")
-Expected { on line 1
+ERROR: Expected { on line 1
 [...]
 
 julia> parse_bibtex("@book@")
-Expected { on line 1
+ERROR: Expected { on line 1
 [...]
 ```
 """
