@@ -1,32 +1,46 @@
 module BibTeX
 
-struct Parser
-    tokens::Vector{String}
+struct Parser{T}
+    tokens::T
     substitutions::Dict{String, String}
     records::Dict{String, Dict{String, String}}
     line::Ref{Int}
 end
 
-Parser(text) = begin
-    without_comments = replace(text, r"%.*\n", "\n")
-    tokens = matchall(r"[^\s\n\"#{}@,=]+|\n|\"|#|{|}|@|,|=", without_comments)
+Base.eltype(p::Parser) = eltype(p.tokens)
+Base.one(p::Parser) = eltype(p)("")
+
+Parser(tokens::T, substitutions, records, line) where T =
+    Parser{T}(tokens, substitutions, records, line)
+
+parse_text(text) = begin
+    tokens = matchall(r"[^\s\n\"#{}@,=]+|\n|\"|#|{|}|@|,|=", text)
     Parser(tokens, Dict{String, String}(), Dict{String, String}(), Ref(1))
 end
 
 location(parser) = "on line $(parser.line.x)"
 
-next_token!(parser, eol = "additional tokens") =
-    if length(parser.tokens) < 1
-        error("Expected $eol $(location(parser))")
+next_token_default!(parser) =
+    if isempty(parser.tokens)
+        one(parser)
     else
         result = shift!(parser.tokens)
         if result == "\n"
             parser.line.x = parser.line.x + 1
-            next_token!(parser, eol)
+            next_token_default!(parser)
         else
             result
         end
     end
+
+next_token!(parser, eol = "additional tokens") = begin
+    result = next_token_default!(parser)
+    if result == ""
+        error("Expected $eol $(location(parser))")
+    else
+        result
+    end
+end
 
 expect(parser, result, expectation) =
     if result != expectation
@@ -35,7 +49,17 @@ expect(parser, result, expectation) =
 
 expect!(parser, expectation) = expect(parser, next_token!(parser, expectation), expectation)
 
-value!(parser, values = String[]) = begin
+token_and_counter!(parser, bracket_counter = 1) = begin
+    token = next_token!(parser, "}")
+    if token == "{"
+        bracket_counter += 1
+    elseif token == "}"
+        bracket_counter -= 1
+    end
+    token, bracket_counter
+end
+
+value!(parser, values) = begin
     token = next_token!(parser)
     if token == "\""
         token = next_token!(parser, "\"")
@@ -44,19 +68,13 @@ value!(parser, values = String[]) = begin
             token = next_token!(parser, "\"")
         end
     elseif token == "{"
-        bracket_counter = 1
-        while bracket_counter > 0
-            token = next_token!(parser, "}")
-            if token == "{"
-                bracket_counter += 1
-            elseif token == "}"
-                bracket_counter -= 1
-            else
-                push!(values, token)
-            end
+        token, counter = token_and_counter!(parser)
+        while counter > 0
+            push!(values, token)
+            token, counter = token_and_counter!(parser, counter)
         end
     else
-        push!(values, getkey(parser.substitutions, token, token) )
+        push!(values, getkey(parser.substitutions, token, String(token) ) )
     end
     token = next_token!(parser, ", or }")
     if token == "#"
@@ -73,7 +91,7 @@ field!(parser, dict) = begin
         if token != "}"
             key = token
             expect!(parser, "=")
-            token, dict[key] = value!(parser)
+            token, dict[key] = value!(parser, eltype(parser)[])
         end
     end
     expect(parser, token, "}")
@@ -83,17 +101,16 @@ export parse_bibtex
 """
     parse_bibtex(text)
 
-This is a simple, input parser for BibTex. I had trouble finding a standard
+This is a simple input parser for BibTex. I had trouble finding a standard
 specification, but I've included several features of real BibTex.
 
 ```jldoctest
 julia> using BibTeX
 
 julia> result = parse_bibtex(""\"
-            @comment blah blah
             @string{short = long}
             @a{b,
-              c = {c {c}}, % blah blah
+              c = { {c} c},
               d = "d d",
               e = f # short
             }
@@ -103,7 +120,7 @@ julia> result["b"]["type"]
 "a"
 
 julia> result["b"]["c"]
-"c c"
+"{ c } c"
 
 julia> result["b"]["d"]
 "d d"
@@ -121,24 +138,23 @@ ERROR: Expected { on line 1
 ```
 """
 parse_bibtex(text) = begin
-    parser = Parser(text)
-    while !isempty(parser.tokens)
-        token = shift!(parser.tokens)
+    parser = parse_text(text)
+    token = next_token_default!(parser)
+    while token != ""
         if token == "@"
             record_type = next_token!(parser)
-            if !(record_type in ["comment", "preamble"])
-                expect!(parser, "{")
-                if record_type == "string"
-                    field!(parser, parser.substitutions)
-                else
-                    id = next_token!(parser)
-                    dict = Dict("type" => record_type)
-                    expect!(parser, ",")
-                    field!(parser, dict)
-                    parser.records[id] = dict
-                end
+            expect!(parser, "{")
+            if lowercase(record_type) == "string"
+                field!(parser, parser.substitutions)
+            else
+                id = next_token!(parser)
+                dict = Dict("type" => record_type)
+                expect!(parser, ",")
+                field!(parser, dict)
+                parser.records[id] = dict
             end
         end
+        token = next_token_default!(parser)
     end
     parser.records
 end
