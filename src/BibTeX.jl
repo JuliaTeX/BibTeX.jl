@@ -59,7 +59,7 @@ token_and_counter!(parser, bracket_counter = 1) = begin
     token, bracket_counter
 end
 
-value!(parser, values) = begin
+value!(parser, values = eltype(parser)[]) = begin
     token = next_token!(parser)
     if token == "\""
         token = next_token!(parser, "\"")
@@ -91,7 +91,7 @@ field!(parser, dict) = begin
         if token != "}"
             key = token
             expect!(parser, "=")
-            token, dict[key] = value!(parser, eltype(parser)[])
+            token, dict[key] = value!(parser)
         end
     end
     expect(parser, token, "}")
@@ -102,12 +102,15 @@ export parse_bibtex
     parse_bibtex(text)
 
 This is a simple input parser for BibTex. I had trouble finding a standard
-specification, but I've included several features of real BibTex.
+specification, but I've included several features of real BibTex. Returns
+a preamble (or an empty string) and a dict of dicts.
 
 ```jldoctest
 julia> using BibTeX
 
-julia> result = parse_bibtex(""\"
+julia> preamble, result = parse_bibtex(""\"
+            @preamble{some instructions}
+            @comment blah blah
             @string{short = long}
             @a{b,
               c = { {c} c},
@@ -115,6 +118,9 @@ julia> result = parse_bibtex(""\"
               e = f # short
             }
             ""\");
+
+julia> preamble
+"some instructions"
 
 julia> result["b"]["type"]
 "a"
@@ -140,23 +146,28 @@ ERROR: Expected { on line 1
 parse_bibtex(text) = begin
     parser = parse_text(text)
     token = next_token_default!(parser)
+    preamble = ""
     while token != ""
         if token == "@"
-            record_type = next_token!(parser)
-            expect!(parser, "{")
-            if lowercase(record_type) == "string"
-                field!(parser, parser.substitutions)
-            else
-                id = next_token!(parser)
-                dict = Dict("type" => record_type)
-                expect!(parser, ",")
-                field!(parser, dict)
-                parser.records[id] = dict
+            record_type = lowercase(next_token!(parser))
+            if record_type == "preamble"
+                trash, preamble = value!(parser)
+            elseif record_type != "comment"
+                expect!(parser, "{")
+                if record_type == "string"
+                    field!(parser, parser.substitutions)
+                else
+                    id = next_token!(parser)
+                    dict = Dict("type" => record_type)
+                    expect!(parser, ",")
+                    field!(parser, dict)
+                    parser.records[id] = dict
+                end
             end
         end
         token = next_token_default!(parser)
     end
-    parser.records
+    preamble, parser.records
 end
 
 end
