@@ -12,3 +12,6 @@ Documenter.makedocs(
     checkdocs = :exports,
     authors = "Brandon Taylor"
 )
+
+# just test if it parses (for now)
+joinpath((@__FILE__) |> dirname |> dirname, "example", "examples.bib") |> readstring |> parse_bibtex
