@@ -1,7 +1,6 @@
 # BibTeX
 
 [![travis badge][travis_badge]][travis_url]
-[![appveyor badge][appveyor_badge]][appveyor_url]
 [![codecov badge][codecov_badge]][codecov_url]
 
 ## Documentation [here][documenter_latest]
