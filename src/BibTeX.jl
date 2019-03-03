@@ -14,7 +14,7 @@ Parser(tokens::T, substitutions, records, line) where T =
     Parser{T}(tokens, substitutions, records, line)
 
 parse_text(text) = begin
-    tokens = matchall(r"[^\s\n\"#{}@,=]+|\n|\"|#|{|}|@|,|=", text)
+    tokens = collect(m.match for m in eachmatch(r"[^\s\n\"#{}@,=]+|\n|\"|#|{|}|@|,|=", text))
     Parser(tokens, Dict{String, String}(), Dict{String, String}(), Ref(1))
 end
 
@@ -24,7 +24,7 @@ next_token_default!(parser) =
     if isempty(parser.tokens)
         one(parser)
     else
-        result = shift!(parser.tokens)
+        result = popfirst!(parser.tokens)
         if result == "\n"
             parser.line.x = parser.line.x + 1
             next_token_default!(parser)
