@@ -97,7 +97,6 @@ field!(parser, dict) = begin
     expect(parser, token, "}")
 end
 
-export parse_bibtex
 """
     parse_bibtex(text)
 
@@ -171,7 +170,7 @@ function parse_bibtex(text)
 end
 
 function parse_bibtex_ordered(text)
-    ordered = []
+    ordered = Array{Dict{String, Dict{String,String}}, 1}()
     parser = parse_text(text)
     token = next_token_default!(parser)
     preamble = ""
@@ -190,7 +189,7 @@ function parse_bibtex_ordered(text)
                     expect!(parser, ",")
                     field!(parser, dict)
                     parser.records[id] = dict
-                    push!(ordered, Dict(id => dict))
+                    push!(ordered, Dict(string(id) => dict))
                     
                 end
             end
@@ -200,4 +199,8 @@ function parse_bibtex_ordered(text)
     preamble, ordered
 end
     
+export parse_bibtex_ordered
+export parse_bibtex
+
+
 end
