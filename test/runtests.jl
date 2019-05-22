@@ -14,4 +14,4 @@ Documenter.makedocs(
 )
 
 # just test if it parses (for now)
-joinpath((@__FILE__) |> dirname |> dirname, "example", "examples.bib") |> readstring |> parse_bibtex
+joinpath((@__FILE__) |> dirname |> dirname, "example", "examples.bib") |> f -> read(f, String) |> parse_bibtex
