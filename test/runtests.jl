@@ -3,7 +3,7 @@ using BibTeX
 import Documenter
 Documenter.makedocs(
     modules = [BibTeX],
-    format = :html,
+    format = Documenter.HTML,
     sitename = "BibTeX.jl",
     root = joinpath(dirname(dirname(@__FILE__)), "docs"),
     pages = Any["Home" => "index.md"],
