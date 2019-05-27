@@ -1,6 +1,6 @@
 The BibTeX.jl package is licensed under the MIT "Expat" License.  (It was originally derived from https://github.com/ptigas/bibpy, which is distributed under the same license.)
 
-Copyright (c) 2017: Brandon Taylor. Copyright (c) 2011 Panagiotis Tigkas.
+*Copyright  © 2017: Brandon Taylor. Copyright  © 2011 Panagiotis Tigkas.*
 
 *Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
