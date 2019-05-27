@@ -3,7 +3,7 @@ using BibTeX
 import Documenter
 Documenter.makedocs(
     modules = [BibTeX],
-    format = :html,
+    format = Documenter.HTML(),
     sitename = "BibTeX.jl",
     root = joinpath(dirname(dirname(@__FILE__)), "docs"),
     pages = Any["Home" => "index.md"],
@@ -14,4 +14,4 @@ Documenter.makedocs(
 )
 
 # just test if it parses (for now)
-joinpath((@__FILE__) |> dirname |> dirname, "example", "examples.bib") |> readstring |> parse_bibtex
+joinpath((@__FILE__) |> dirname |> dirname, "example", "examples.bib") |> f -> read(f, String) |> parse_bibtex
