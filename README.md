@@ -3,7 +3,7 @@
 [![travis badge][travis_badge]][travis_url]
 [![codecov badge][codecov_badge]][codecov_url]
 
-Parsing BibTeX files for the Julia language.  Originally based on https://github.com/ptigas/bibpy/blob/master/bibpy/bib.py
+Parsing BibTeX files for the Julia language.  Originally based on https://github.com/ptigas/bibpy
 
 ## Documentation [here][documenter_latest]
 
