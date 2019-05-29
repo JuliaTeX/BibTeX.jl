@@ -1,7 +1,11 @@
-import Documenter
+import Documenter, BibTeX
+
+Documenter.makedocs(
+    sitename = "BibTeX.jl",
+)
 
 Documenter.deploydocs(
-    repo = "github.com/bramtayl/BibTeX.jl.git",
+    repo = "github.com/JuliaTeX/BibTeX.jl.git",
     target = "build",
     deps = nothing,
     make = nothing

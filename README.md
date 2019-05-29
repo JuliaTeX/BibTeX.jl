@@ -9,14 +9,14 @@ Parsing BibTeX files for the Julia language.  Originally based on https://github
 
 Change documentation link to `documenter_stable` once published!
 
-[travis_badge]: https://travis-ci.org/bramtayl/BibTeX.jl.svg?branch=master
-[travis_url]: https://travis-ci.org/bramtayl/BibTeX.jl
+[travis_badge]: https://travis-ci.org/JuliaTeX/BibTeX.jl.svg?branch=master
+[travis_url]: https://travis-ci.org/JuliaTeX/BibTeX.jl
 
-[appveyor_badge]: https://ci.appveyor.com/api/projects/status/github/bramtayl/BibTeX.jl?svg=true&branch=master
-[appveyor_url]: https://ci.appveyor.com/project/bramtayl/bibtex-jl
+[appveyor_badge]: https://ci.appveyor.com/api/projects/status/github/JuliaTeX/BibTeX.jl?svg=true&branch=master
+[appveyor_url]: https://ci.appveyor.com/project/JuliaTeX/bibtex-jl
 
-[codecov_badge]: http://codecov.io/github/bramtayl/BibTeX.jl/coverage.svg?branch=master
-[codecov_url]: http://codecov.io/github/bramtayl/BibTeX.jl?branch=master
+[codecov_badge]: http://codecov.io/github/JuliaTeX/BibTeX.jl/coverage.svg?branch=master
+[codecov_url]: http://codecov.io/github/JuliaTeX/BibTeX.jl?branch=master
 
-[documenter_stable]: https://bramtayl.github.io/BibTeX.jl/stable
-[documenter_latest]: https://bramtayl.github.io/BibTeX.jl/latest
+[documenter_stable]: https://JuliaTeX.github.io/BibTeX.jl/stable
+[documenter_latest]: https://JuliaTeX.github.io/BibTeX.jl/latest
