@@ -1,22 +1,5 @@
-# BibTeX
+# BibTeX.jl
 
-[![travis badge][travis_badge]][travis_url]
-[![codecov badge][codecov_badge]][codecov_url]
+[![CI](https://github.com/JuliaTeX/BibTeX.jl/workflows/CI/badge.svg?branch=master)](https://github.com/JuliaTeX/BibTeX.jl/actions?query=workflow%3ACI)
 
 Parsing BibTeX files for the Julia language.  Originally based on https://github.com/ptigas/bibpy
-
-## Documentation [here][documenter_latest]
-
-Change documentation link to `documenter_stable` once published!
-
-[travis_badge]: https://travis-ci.org/bramtayl/BibTeX.jl.svg?branch=master
-[travis_url]: https://travis-ci.org/bramtayl/BibTeX.jl
-
-[appveyor_badge]: https://ci.appveyor.com/api/projects/status/github/bramtayl/BibTeX.jl?svg=true&branch=master
-[appveyor_url]: https://ci.appveyor.com/project/bramtayl/bibtex-jl
-
-[codecov_badge]: http://codecov.io/github/bramtayl/BibTeX.jl/coverage.svg?branch=master
-[codecov_url]: http://codecov.io/github/bramtayl/BibTeX.jl?branch=master
-
-[documenter_stable]: https://bramtayl.github.io/BibTeX.jl/stable
-[documenter_latest]: https://bramtayl.github.io/BibTeX.jl/latest
