@@ -1,6 +1,6 @@
 name = "BibTeX"
 uuid = "7b0aa2c9-049f-5cec-894a-2b6b781bb25e"
-version = "0.0.0"
+version = "0.1.0"
 
 [compat]
 julia = "≥ 0.7.0"
