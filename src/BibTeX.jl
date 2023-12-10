@@ -97,7 +97,6 @@ field!(parser, dict) = begin
     expect(parser, token, "}")
 end
 
-export parse_bibtex
 """
     parse_bibtex(text)
 
@@ -143,7 +142,7 @@ ERROR: Expected { on line 1
 [...]
 ```
 """
-parse_bibtex(text) = begin
+function parse_bibtex(text)
     parser = parse_text(text)
     token = next_token_default!(parser)
     preamble = ""
@@ -169,5 +168,39 @@ parse_bibtex(text) = begin
     end
     preamble, parser.records
 end
+
+function parse_bibtex_ordered(text)
+    ordered = Array{Dict{String, Dict{String,String}}, 1}()
+    parser = parse_text(text)
+    token = next_token_default!(parser)
+    preamble = ""
+    while token != ""
+        if token == "@"
+            record_type = lowercase(next_token!(parser))
+            if record_type == "preamble"
+                trash, preamble = value!(parser)
+            elseif record_type != "comment"
+                expect!(parser, "{")
+                if record_type == "string"
+                    field!(parser, parser.substitutions)
+                else
+                    id = next_token!(parser)
+                    dict = Dict("type" => record_type)
+                    expect!(parser, ",")
+                    field!(parser, dict)
+                    parser.records[id] = dict
+                    push!(ordered, Dict(string(id) => dict))
+                    
+                end
+            end
+        end
+        token = next_token_default!(parser)
+    end
+    preamble, ordered
+end
+    
+export parse_bibtex_ordered
+export parse_bibtex
+
 
 end
